@@ -35,16 +35,16 @@ export default function HomePage() {
           Start tracking free →
         </Link>
 
-        <p style={{ marginTop: 16, fontSize: 13, color: "#4b5563" }}>No credit card. Free for personal use.</p>
+        <p style={{ marginTop: 16, fontSize: 13, color: "#4b5563" }}>No credit card. Free forever for personal use.</p>
       </section>
 
       {/* How it works */}
       <section style={{ padding: "80px 24px", background: "#16192a", borderTop: "1px solid #2a2d3e" }}>
         <div style={{ maxWidth: 720, margin: "0 auto" }}>
           <div style={{ fontSize: 12, fontWeight: 700, color: "#FCD116", letterSpacing: "0.1em", marginBottom: 40, textAlign: "center" }}>HOW IT WORKS</div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 32 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 32 }}>
             {[
-              { icon: "📧", title: "Scan your Gmail", body: "Connect Gmail and the app automatically searches your inbox for Colombia flights, hotels, and Airbnb bookings." },
+              { icon: "✉️", title: "Paste a flight email", body: "AI reads your booking confirmation and extracts your Colombia travel dates automatically." },
               { icon: "📅", title: "Or enter manually", body: "Add any stay — arrivals, departures, multi-city trips — in seconds with the date picker." },
               { icon: "📊", title: "See your rolling count", body: "The gauge tracks your worst 365-day window in real time, exactly how Colombian tax law calculates it." },
               { icon: "⚠️", title: "Get warned early", body: "At 150 days you'll see a warning. At 183 you'll know to call your accountant." },
@@ -61,6 +61,11 @@ export default function HomePage() {
 
       {/* Disclaimer */}
       <footer style={{ padding: "24px", borderTop: "1px solid #2a2d3e", textAlign: "center" }}>
+        <div style={{ display: "flex", gap: 20, justifyContent: "center", marginBottom: 12 }}>
+          <a href="/privacy" style={{ fontSize: 12, color: "#6b7280", textDecoration: "none" }}>Privacy Policy</a>
+          <a href="/terms" style={{ fontSize: 12, color: "#6b7280", textDecoration: "none" }}>Terms of Service</a>
+          <a href="mailto:admin@183days.co" style={{ fontSize: 12, color: "#6b7280", textDecoration: "none" }}>Contact</a>
+        </div>
         <p style={{ fontSize: 12, color: "#374151", maxWidth: 600, margin: "0 auto" }}>
           183 is an informational tool only. It does not provide legal or tax advice. Consult a Colombian tax professional for your specific situation.
         </p>
