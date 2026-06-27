@@ -34,46 +34,67 @@ export function formatDate(str: string): string {
 }
 
 export interface RollingResult {
-  maxDays: number;
-  windowStart: Date | null;
-  windowEnd: Date | null;
+  // Primary: days in Colombia in the last 365 days from TODAY
+  daysLast365: number;
+  windowStart: Date;
+  windowEnd: Date;
+  // Secondary: worst historical window (may be higher)
+  worstDays: number;
+  worstWindowStart: Date | null;
+  worstWindowEnd: Date | null;
 }
 
-export function computeRollingMax(trips: Trip[]): RollingResult {
+export function computeRolling(trips: Trip[]): RollingResult {
   const stays = trips
     .filter(t => t.location === "colombia" && t.start_date && t.end_date)
     .map(t => ({ start: parseDate(t.start_date), end: parseDate(t.end_date) }))
     .sort((a, b) => a.start.getTime() - b.start.getTime());
 
-  if (!stays.length) return { maxDays: 0, windowStart: null, windowEnd: null };
-
   const today = new Date();
   today.setHours(12, 0, 0, 0);
+  const windowStart = addDays(today, -364); // 365-day window ending today
 
-  let maxDays = 0;
-  let bestStart: Date | null = null;
-  let bestEnd: Date | null = null;
+  // PRIMARY: count days in last 365 days from today
+  let daysLast365 = 0;
+  for (const s of stays) {
+    const overlapStart = new Date(Math.max(s.start.getTime(), windowStart.getTime()));
+    const overlapEnd = new Date(Math.min(s.end.getTime(), today.getTime()));
+    if (overlapEnd >= overlapStart) {
+      daysLast365 += daysBetween(overlapStart, overlapEnd);
+    }
+  }
 
-  const candidates = [...stays.map(s => s.start), addDays(today, -364)];
+  // SECONDARY: check all historical windows to find worst ever
+  let worstDays = daysLast365;
+  let worstWindowStart: Date | null = windowStart;
+  let worstWindowEnd: Date | null = today;
 
-  for (const windowStart of candidates) {
-    const windowEnd = addDays(windowStart, 364);
+  for (const s of stays) {
+    const wStart = s.start;
+    const wEnd = addDays(wStart, 364);
     let count = 0;
-    for (const s of stays) {
-      const overlapStart = new Date(Math.max(s.start.getTime(), windowStart.getTime()));
-      const overlapEnd = new Date(Math.min(s.end.getTime(), windowEnd.getTime()));
+    for (const s2 of stays) {
+      const overlapStart = new Date(Math.max(s2.start.getTime(), wStart.getTime()));
+      const overlapEnd = new Date(Math.min(s2.end.getTime(), wEnd.getTime()));
       if (overlapEnd >= overlapStart) {
         count += daysBetween(overlapStart, overlapEnd);
       }
     }
-    if (count > maxDays) {
-      maxDays = count;
-      bestStart = windowStart;
-      bestEnd = windowEnd;
+    if (count > worstDays) {
+      worstDays = count;
+      worstWindowStart = wStart;
+      worstWindowEnd = wEnd;
     }
   }
 
-  return { maxDays, windowStart: bestStart, windowEnd: bestEnd };
+  return {
+    daysLast365,
+    windowStart,
+    windowEnd: today,
+    worstDays,
+    worstWindowStart,
+    worstWindowEnd,
+  };
 }
 
 export function getTripDays(trip: Trip): number {
@@ -81,8 +102,8 @@ export function getTripDays(trip: Trip): number {
   return daysBetween(parseDate(trip.start_date), parseDate(trip.end_date));
 }
 
-export function getStatusLevel(maxDays: number): "safe" | "warning" | "resident" {
-  if (maxDays >= 183) return "resident";
-  if (maxDays >= 150) return "warning";
+export function getStatusLevel(days: number): "safe" | "warning" | "resident" {
+  if (days >= 183) return "resident";
+  if (days >= 150) return "warning";
   return "safe";
 }
