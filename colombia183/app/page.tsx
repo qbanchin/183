@@ -44,7 +44,7 @@ export default function HomePage() {
           <div style={{ fontSize: 12, fontWeight: 700, color: "#FCD116", letterSpacing: "0.1em", marginBottom: 40, textAlign: "center" }}>HOW IT WORKS</div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 32 }}>
             {[
-              { icon: "✉️", title: "Paste a flight email", body: "AI reads your booking confirmation and extracts your Colombia travel dates automatically." },
+              { icon: "📧", title: "Scan your Gmail", body: "Connect Gmail and the app automatically searches your inbox for Colombia flights, hotels, and Airbnb bookings." },
               { icon: "📅", title: "Or enter manually", body: "Add any stay — arrivals, departures, multi-city trips — in seconds with the date picker." },
               { icon: "📊", title: "See your rolling count", body: "The gauge tracks your worst 365-day window in real time, exactly how Colombian tax law calculates it." },
               { icon: "⚠️", title: "Get warned early", body: "At 150 days you'll see a warning. At 183 you'll know to call your accountant." },
