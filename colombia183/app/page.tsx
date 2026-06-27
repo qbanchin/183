@@ -7,7 +7,7 @@ export default function HomePage() {
       <nav style={{ padding: "20px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #2a2d3e" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <span style={{ fontSize: 22 }}>🇨🇴</span>
-          <span style={{ fontWeight: 800, fontSize: 17, color: "#fff", letterSpacing: "-0.3px" }}>183</span>
+          
         </div>
         <div style={{ display: "flex", gap: 12 }}>
           <Link href="/login" style={{ color: "#9ca3af", fontWeight: 600, fontSize: 14, padding: "8px 16px" }}>Log in</Link>
