@@ -25,7 +25,7 @@ export default function Navbar({ email }: { email?: string }) {
     }}>
       <div style={{ maxWidth: 760, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: 58 }}>
         <Link href="/dashboard" style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <img src="/183logo.png" alt="183 Days" style={{ height: 32, width: "auto" }} />
+          <img src="/183logo.png" alt="183 Days" style={{ height: 37, width: "auto" }} />
           <span style={{ fontWeight: 800, fontSize: 15, color: "#fff", letterSpacing: "-0.2px" }}>183</span>
         </Link>
 
