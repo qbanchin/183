@@ -6,7 +6,7 @@ export default function HomePage() {
       {/* Nav */}
       <nav style={{ padding: "20px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #2a2d3e" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <span style={{ fontSize: 22 }}>🇨🇴</span>
+        <img src="/183logo.png" alt="183 Days" style={{ height: 41, width: "auto" }} />
           
         </div>
         <div style={{ display: "flex", gap: 12 }}>
