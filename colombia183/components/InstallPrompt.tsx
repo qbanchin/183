@@ -64,7 +64,7 @@ export default function InstallPrompt() {
           <img
             src="/install-button-android.png"
             alt="Install for Android Device"
-            style={{ height: 44, width: "auto", borderRadius: 8, display: "block" }}
+            style={{ width: 192, height: "auto", borderRadius: 8, display: "block" }}
           />
         </button>
 
