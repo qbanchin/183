@@ -1,0 +1,17 @@
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase-server";
+import HistoryClient from "./HistoryClient";
+
+export default async function HistoryPage() {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  const { data: trips } = await supabase
+    .from("trips")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("start_date", { ascending: false });
+
+  return <HistoryClient initialTrips={trips ?? []} userEmail={user.email ?? ""} />;
+}
