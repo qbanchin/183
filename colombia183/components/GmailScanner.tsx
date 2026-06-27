@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Trip, formatDate, parseDate, daysBetween } from "@/lib/tax-logic";
 
 interface Props {
@@ -7,8 +7,10 @@ interface Props {
   gmailConnected: boolean;
 }
 
-export default function GmailScanner({ onAdd, gmailConnected }: Props) {
+export default function GmailScanner({ onAdd, gmailConnected: initialConnected }: Props) {
+  const [connected, setConnected] = useState(initialConnected);
   const [scanning, setScanning] = useState(false);
+  const [disconnecting, setDisconnecting] = useState(false);
   const [results, setResults] = useState<Omit<Trip, "id" | "user_id" | "created_at">[]>([]);
   const [msg, setMsg] = useState("");
   const [saving, setSaving] = useState(false);
@@ -41,6 +43,20 @@ export default function GmailScanner({ onAdd, gmailConnected }: Props) {
     setSaving(false);
   }
 
+  async function handleDisconnect() {
+    if (!confirm("Disconnect Gmail? You can reconnect anytime.")) return;
+    setDisconnecting(true);
+    try {
+      await fetch("/api/gmail/disconnect", { method: "POST" });
+      setConnected(false);
+      setResults([]);
+      setMsg("");
+    } catch {
+      setMsg("Could not disconnect. Try again.");
+    }
+    setDisconnecting(false);
+  }
+
   if (!open) {
     return (
       <button
@@ -53,26 +69,27 @@ export default function GmailScanner({ onAdd, gmailConnected }: Props) {
         }}
       >
         <span>📧</span> Scan Gmail for Bookings
+        {connected && <span style={{ fontSize: 11, color: "#6ee7b7", background: "#064e3b33", borderRadius: 4, padding: "2px 8px" }}>Connected</span>}
       </button>
     );
   }
 
   return (
     <div style={{ background: "#16192a", borderRadius: 16, padding: 24, border: "1px solid #2a2d3e", marginBottom: 16 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
         <div>
           <div style={{ fontWeight: 800, fontSize: 18 }}>📧 Gmail Scanner</div>
           <div style={{ fontSize: 13, color: "#6b7280", marginTop: 2 }}>
             Automatically finds Colombia flights, hotels, and rentals in your inbox.
           </div>
         </div>
-        <button onClick={() => setOpen(false)} style={{ background: "transparent", border: "none", color: "#6b7280", fontSize: 20 }}>✕</button>
+        <button onClick={() => setOpen(false)} style={{ background: "transparent", border: "none", color: "#6b7280", fontSize: 20, cursor: "pointer" }}>✕</button>
       </div>
 
-      {!gmailConnected ? (
+      {!connected ? (
         <div>
           <div style={{ fontSize: 14, color: "#9ca3af", marginBottom: 16, lineHeight: 1.6 }}>
-            Connect your Gmail account to let 183 scan for Colombia booking confirmations automatically. We only read booking-related emails — we never store your email content.
+            Connect your Gmail account to let 183 Days scan for Colombia booking confirmations automatically. We only read booking-related emails and never store your email content.
           </div>
           <a
             href="/api/auth/google"
@@ -82,13 +99,20 @@ export default function GmailScanner({ onAdd, gmailConnected }: Props) {
               textDecoration: "none",
             }}
           >
-            <span style={{ marginRight: 8 }}>🔗</span> Connect Gmail
+            🔗 Connect Gmail
           </a>
         </div>
       ) : (
         <div>
-          <div style={{ fontSize: 13, color: "#6b7280", marginBottom: 16 }}>
-            ✅ Gmail connected. Click scan to search your inbox for Colombia bookings.
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+            <div style={{ fontSize: 13, color: "#6ee7b7" }}>✅ Gmail connected</div>
+            <button
+              onClick={handleDisconnect}
+              disabled={disconnecting}
+              style={{ background: "transparent", border: "1px solid #374151", color: "#ef4444", borderRadius: 6, padding: "4px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
+            >
+              {disconnecting ? "Disconnecting…" : "Disconnect"}
+            </button>
           </div>
 
           {msg && (
@@ -115,7 +139,7 @@ export default function GmailScanner({ onAdd, gmailConnected }: Props) {
               <button
                 onClick={handleAdd}
                 disabled={saving}
-                style={{ width: "100%", background: "#FCD116", color: "#16192a", border: "none", borderRadius: 10, padding: "12px", fontWeight: 700, fontSize: 15, marginTop: 4 }}
+                style={{ width: "100%", background: "#FCD116", color: "#16192a", border: "none", borderRadius: 10, padding: "12px", fontWeight: 700, fontSize: 15, marginTop: 4, cursor: "pointer" }}
               >
                 {saving ? "Adding…" : `Add ${results.length} Trip${results.length !== 1 ? "s" : ""} to Tracker`}
               </button>
@@ -125,7 +149,7 @@ export default function GmailScanner({ onAdd, gmailConnected }: Props) {
           <button
             onClick={handleScan}
             disabled={scanning}
-            style={{ width: "100%", background: scanning ? "#2a2d3e" : "#16192a", color: scanning ? "#4b5563" : "#e8e4d9", border: "1px solid #2a2d3e", borderRadius: 10, padding: "12px", fontWeight: 700, fontSize: 15 }}
+            style={{ width: "100%", background: scanning ? "#2a2d3e" : "#16192a", color: scanning ? "#4b5563" : "#e8e4d9", border: "1px solid #2a2d3e", borderRadius: 10, padding: "12px", fontWeight: 700, fontSize: 15, cursor: "pointer" }}
           >
             {scanning ? "Scanning inbox…" : "🔍 Scan Gmail Now"}
           </button>
