@@ -13,11 +13,9 @@ async function getValidAccessToken(userId: string, supabase: any): Promise<strin
 
   if (!data) return null;
 
-  // Check if token is expired
   const isExpired = data.expires_at && new Date(data.expires_at) < new Date(Date.now() + 60000);
 
   if (isExpired && data.refresh_token) {
-    // Refresh the token
     const res = await fetch("https://oauth2.googleapis.com/token", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -49,7 +47,6 @@ async function fetchEmailBody(messageId: string, accessToken: string): Promise<s
   );
   const msg = await res.json();
 
-  // Extract text from email parts
   function extractText(payload: any): string {
     if (!payload) return "";
     if (payload.body?.data) {
@@ -63,7 +60,7 @@ async function fetchEmailBody(messageId: string, accessToken: string): Promise<s
 
   const subject = msg.payload?.headers?.find((h: any) => h.name === "Subject")?.value ?? "";
   const body = extractText(msg.payload);
-  return `Subject: ${subject}\n\n${body}`.slice(0, 8000); // limit per email
+  return `Subject: ${subject}\n\n${body}`.slice(0, 8000);
 }
 
 export async function POST() {
@@ -76,7 +73,6 @@ export async function POST() {
     return NextResponse.json({ error: "Gmail not connected" }, { status: 400 });
   }
 
-  // Search Gmail for Colombia booking emails
   const queries = [
     "Colombia booking confirmation",
     "Bogotá reservation",
@@ -104,8 +100,7 @@ export async function POST() {
     return NextResponse.json({ trips: [], scanned: 0, message: "No Colombia booking emails found." });
   }
 
-  // Fetch up to 20 unique emails
-  const ids = [...messageIds].slice(0, 20);
+  const ids = Array.from(messageIds).slice(0, 20);
   const emailTexts: string[] = [];
 
   for (const id of ids) {
@@ -115,7 +110,6 @@ export async function POST() {
     } catch {}
   }
 
-  // Send all emails to AI in one batch
   const combined = emailTexts.map((t, i) => `--- EMAIL ${i + 1} ---\n${t}`).join("\n\n");
 
   const message = await anthropic.messages.create({
@@ -123,10 +117,9 @@ export async function POST() {
     max_tokens: 2048,
     messages: [{
       role: "user",
-      content: `You are extracting Colombia travel dates from multiple booking confirmation emails.
-Extract ALL Colombia stays — flights, hotels, Airbnb, VRBO, short-term rentals.
+      content: `Extract ALL Colombia stays from these booking emails — flights, hotels, Airbnb, rentals.
 
-Colombia cities: Bogotá, Medellín, Cali, Cartagena, Barranquilla, Santa Marta, Pereira, Bucaramanga, and anywhere else in Colombia.
+Colombia cities: Bogotá, Medellín, Cali, Cartagena, Barranquilla, Santa Marta, and anywhere else in Colombia.
 Colombia airports: BOG, MDE, CLO, CTG, BAQ, SMR, PEI, BGA, ADZ, CUC.
 
 RULES:
@@ -134,15 +127,14 @@ RULES:
 - Flight FROM Colombia one-way: start_date = end_date = departure date
 - Round trip: start_date = Colombia arrival, end_date = Colombia departure
 - Hotel/Airbnb/rental: start_date = check-in, end_date = check-out
-- If same trip has flight + hotel in different emails, create ONE entry with earliest arrival and latest departure
-- Skip duplicate trips (same dates already seen)
+- Same trip in multiple emails = ONE entry with earliest arrival and latest departure
 - location is always "colombia"
 - note: brief description like "Airbnb Medellín", "Flight MIA→BOG", "Hotel Cartagena"
 
-Return ONLY a JSON array, no markdown, no explanation:
+Return ONLY a JSON array:
 [{"start_date":"YYYY-MM-DD","end_date":"YYYY-MM-DD","location":"colombia","note":"..."}]
 
-If nothing found, return: []
+If nothing found: []
 
 EMAILS:
 ${combined}`,
@@ -157,7 +149,7 @@ ${combined}`,
     if (!Array.isArray(trips)) trips = [];
   } catch { trips = []; }
 
-  const valid = trips.filter(t =>
+  const valid = trips.filter((t: any) =>
     t.start_date && t.end_date && t.location === "colombia" &&
     /^\d{4}-\d{2}-\d{2}$/.test(t.start_date) &&
     /^\d{4}-\d{2}-\d{2}$/.test(t.end_date)
