@@ -55,11 +55,11 @@ export default function InstallPrompt() {
         <button onClick={handleDismiss} style={{ background: "transparent", border: "none", color: "#4b5563", fontSize: 16, cursor: "pointer" }}>✕</button>
       </div>
 
-      <div style={{ display: "flex", flexDirection: "row", gap: 10 }}>
+      <div style={{ display: "flex", flexDirection: "row", gap: 6, justifyContent: "center" }}>
         {/* Android button */}
         <button
           onClick={handleAndroidInstall}
-          style={{ background: "none", border: "none", padding: 0, cursor: "pointer", display: "block", width: "100%" }}
+          style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
         >
           <img
             src="/install-button-android.png"
@@ -71,7 +71,7 @@ export default function InstallPrompt() {
         {/* iOS button */}
         <button
           onClick={() => setShowIOSInstructions(!showIOSInstructions)}
-          style={{ background: "none", border: "none", padding: 0, cursor: "pointer", display: "block", width: "100%" }}
+          style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
         >
           <img
             src="/install-button-apple.png"
