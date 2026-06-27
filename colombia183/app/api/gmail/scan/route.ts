@@ -155,7 +155,7 @@ export async function POST(req: Request) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  let limit = 200;
+  let limit = 500;
   try {
     const body = await req.json();
     if (body.limit) limit = Math.min(body.limit, 500);
