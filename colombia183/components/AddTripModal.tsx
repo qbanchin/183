@@ -45,7 +45,7 @@ export default function AddTripModal({ trip, onSave, onClose }: Props) {
   }
 
   const locationOptions = [
-  { v: "colombia" as const, label: "In Colombia 🇨🇴", desc: "Confirmed past or current stay" },
+  { v: "colombia" as const, label: "In Colombia", desc: "Confirmed past or current stay" },
     { v: "planned" as const, label: "📅 Planned Trip", desc: "Future Colombia stay" },
   ];
 
