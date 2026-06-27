@@ -55,7 +55,7 @@ export default function InstallPrompt() {
         <button onClick={handleDismiss} style={{ background: "transparent", border: "none", color: "#4b5563", fontSize: 16, cursor: "pointer" }}>✕</button>
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      <div style={{ display: "flex", flexDirection: "row", gap: 10 }}>
         {/* Android button */}
         <button
           onClick={handleAndroidInstall}
@@ -64,7 +64,7 @@ export default function InstallPrompt() {
           <img
             src="/install-button-android.png"
             alt="Install for Android Device"
-            style={{ width: "100%", borderRadius: 10, display: "block" }}
+            style={{ height: 44, width: "auto", borderRadius: 8, display: "block" }}
           />
         </button>
 
