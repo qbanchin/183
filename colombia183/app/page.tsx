@@ -32,7 +32,7 @@ export default function HomePage() {
           The rolling 365-day rule catches expats off guard every year. 183 tracks every day you spend in the country — automatically from flight emails or manually — and alerts you before you cross the threshold.
         </p>
 
-        <Link href="/signup" style={{ background: "#FCD116", color: "#16192a", fontWeight: 800, fontSize: 17, padding: "16px 40px", borderRadius: 12, display: "inline-block" }}>
+        <div style={{ display: "flex", gap: 6, justifyContent: "center", marginBottom: 24 }}><a href="/dashboard"><img src="/install-buderRadius: 12, display: "inline-block" }}>
           Start tracking free →
         </Link>
 
