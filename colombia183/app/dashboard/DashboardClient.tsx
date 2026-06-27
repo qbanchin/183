@@ -5,13 +5,16 @@ import Navbar from "@/components/Navbar";
 import TripRow from "@/components/TripRow";
 import AddTripModal from "@/components/AddTripModal";
 import EmailModal from "@/components/EmailModal";
+import GmailScanner from "@/components/GmailScanner";
 
 export default function DashboardClient({
   initialTrips,
   userEmail,
+  gmailConnected,
 }: {
   initialTrips: Trip[];
   userEmail: string;
+  gmailConnected: boolean;
 }) {
   const [trips, setTrips] = useState<Trip[]>(initialTrips);
   const [showAdd, setShowAdd] = useState(false);
@@ -83,7 +86,7 @@ export default function DashboardClient({
       <Navbar email={userEmail} />
       <div style={{ maxWidth: 760, margin: "0 auto", padding: "24px 16px 80px" }}>
 
-        {/* Primary status card — ACTUAL */}
+        {/* Primary status card */}
         <div style={{ background: "#16192a", borderRadius: 16, padding: "24px", marginBottom: 12, border: "1px solid #2a2d3e", position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: statusColor }} />
 
@@ -110,7 +113,7 @@ export default function DashboardClient({
               <div style={{ fontSize: 36, fontWeight: 900, color: "#fff", lineHeight: 1 }}>{remaining}</div>
               <div style={{ fontSize: 14, color: "#6b7280", marginBottom: 16 }}>days remaining before residency</div>
               <div style={{ fontSize: 12, color: "#4b5563", background: "#0f1117", borderRadius: 8, padding: "8px 12px", lineHeight: 1.6 }}>
-                Resets daily - any stays 366 days or older just dropped off.
+                Resets daily - any stays 366 days or more just dropped off.
               </div>
             </div>
           </div>
@@ -122,36 +125,31 @@ export default function DashboardClient({
           )}
         </div>
 
-        {/* Projected card — only show if there are planned trips */}
+        {/* Projected card */}
         {hasPlanned && (
-          <div style={{ background: "#16192a", borderRadius: 16, padding: "20px 24px", marginBottom: 12, border: `1px solid #60a5fa33`, position: "relative", overflow: "hidden" }}>
+          <div style={{ background: "#16192a", borderRadius: 16, padding: "20px 24px", marginBottom: 12, border: "1px solid #60a5fa33", position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: "#60a5fa" }} />
-
             <div style={{ fontSize: 11, fontWeight: 700, color: "#4b5563", letterSpacing: "0.08em", marginBottom: 14 }}>
               PROJECTED · IF ALL PLANNED TRIPS HAPPEN
             </div>
-
             <div style={{ display: "flex", alignItems: "center", gap: 24, flexWrap: "wrap" }}>
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                <svg width={150} height={85} viewBox="0 0 190 105">
-                  <path d="M 10 95 A 85 85 0 0 1 180 95" fill="none" stroke="#2a2d3e" strokeWidth={14} strokeLinecap="round" />
-                  <path d="M 10 95 A 85 85 0 0 1 180 95" fill="none" stroke={projectedColor}
-                    strokeWidth={14} strokeLinecap="round"
-                    strokeDasharray={`${(projectedPct / 100) * 267} 267`} />
-                  <text x="95" y="74" textAnchor="middle" fill={projectedColor} fontSize="32" fontWeight="800" fontFamily="Inter, sans-serif">{projectedDays}</text>
-                  <text x="95" y="92" textAnchor="middle" fill="#6b7280" fontSize="12" fontFamily="Inter, sans-serif">of 183 days</text>
-                </svg>
-              </div>
-
+              <svg width={150} height={85} viewBox="0 0 190 105">
+                <path d="M 10 95 A 85 85 0 0 1 180 95" fill="none" stroke="#2a2d3e" strokeWidth={14} strokeLinecap="round" />
+                <path d="M 10 95 A 85 85 0 0 1 180 95" fill="none" stroke={projectedColor}
+                  strokeWidth={14} strokeLinecap="round"
+                  strokeDasharray={`${(projectedPct / 100) * 267} 267`} />
+                <text x="95" y="74" textAnchor="middle" fill={projectedColor} fontSize="32" fontWeight="800" fontFamily="Inter, sans-serif">{projectedDays}</text>
+                <text x="95" y="92" textAnchor="middle" fill="#6b7280" fontSize="12" fontFamily="Inter, sans-serif">of 183 days</text>
+              </svg>
               <div style={{ flex: 1, minWidth: 160 }}>
                 <div style={{ fontSize: 28, fontWeight: 900, color: projectedColor, lineHeight: 1 }}>{projectedRemaining}</div>
                 <div style={{ fontSize: 13, color: "#6b7280", marginBottom: 10 }}>days buffer with planned trips</div>
-                <div style={{ fontSize: 12, color: "#60a5fa", background: "#60a5fa11", borderRadius: 8, padding: "8px 12px", lineHeight: 1.6 }}>
+                <div style={{ fontSize: 12, color: "#60a5fa", background: "#60a5fa11", borderRadius: 8, padding: "8px 12px" }}>
                   +{plannedDays} planned days · {projectedDays - daysLast365} would count toward limit
                 </div>
                 {projectedDays >= 183 && (
-                  <div style={{ marginTop: 10, fontSize: 13, color: "#fca5a5", background: "#7f1d1d22", borderRadius: 8, padding: "8px 12px", lineHeight: 1.6 }}>
-                    ⚠️ Your planned trips would push you over 183 days. Consider shortening your stay.
+                  <div style={{ marginTop: 10, fontSize: 13, color: "#fca5a5", background: "#7f1d1d22", borderRadius: 8, padding: "8px 12px" }}>
+                    ⚠️ Your planned trips would push you over 183 days.
                   </div>
                 )}
               </div>
@@ -159,7 +157,7 @@ export default function DashboardClient({
           </div>
         )}
 
-        {/* Worst historical window warning */}
+        {/* Worst historical warning */}
         {showWorstWarning && worstWindowStart && worstWindowEnd && (
           <div style={{ background: "#16192a", borderRadius: 12, padding: "14px 16px", marginBottom: 12, border: "1px solid #dd6b2033" }}>
             <div style={{ fontSize: 12, fontWeight: 700, color: "#dd6b20", marginBottom: 4 }}>⚠️ Historical Peak</div>
@@ -186,13 +184,18 @@ export default function DashboardClient({
         </div>
 
         {/* Action buttons */}
-        <div style={{ display: "flex", gap: 10, marginBottom: 24 }}>
+        <div style={{ display: "flex", gap: 10, marginBottom: 16 }}>
           <button onClick={() => { setEditTrip(null); setShowAdd(true); }} style={{ flex: 1, background: "#FCD116", color: "#16192a", border: "none", borderRadius: 10, padding: "13px", fontWeight: 700, fontSize: 15 }}>
             + Add Stay
           </button>
           <button onClick={() => setShowEmail(true)} style={{ flex: 1, background: "#16192a", color: "#e8e4d9", border: "1px solid #2a2d3e", borderRadius: 10, padding: "13px", fontWeight: 700, fontSize: 15 }}>
-            ✉️ Flight Email
+            ✉️ Paste Email
           </button>
+        </div>
+
+        {/* Gmail Scanner */}
+        <div style={{ marginBottom: 24 }}>
+          <GmailScanner onAdd={handleAddMultiple} gmailConnected={gmailConnected} />
         </div>
 
         {/* Recent trips */}
@@ -209,7 +212,7 @@ export default function DashboardClient({
           <div style={{ textAlign: "center", padding: "60px 24px", color: "#4b5563" }}>
             <div style={{ fontSize: 44, marginBottom: 16 }}>🗓️</div>
             <div style={{ fontWeight: 700, fontSize: 16, color: "#6b7280", marginBottom: 8 }}>No stays logged yet</div>
-            <div style={{ fontSize: 14 }}>Add a confirmed stay, plan a future trip, or paste a flight email.</div>
+            <div style={{ fontSize: 14 }}>Add a confirmed stay, plan a future trip, paste an email, or scan Gmail.</div>
           </div>
         )}
 
