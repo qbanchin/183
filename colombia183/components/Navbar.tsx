@@ -47,7 +47,7 @@ export default function Navbar({ email }: { email?: string }) {
             </Link>
           ))}
 
-          <button
+          <a href="https://www.paypal.com/donate/?business=admin%40183days.co&currency_code=USD" target="_blank" rel="noopener noreferrer" style={{ padding: "6px 14px", borderRadius: 8, fontSize: 12, fontWeight: 700, background: "#003087", color: "#fff", border: "none", textDecoration: "none", display: "flex", alignItems: "center", gap: 5 }}>☕ Donate</a>         <button
             onClick={handleLogout}
             style={{ marginLeft: 8, padding: "6px 14px", borderRadius: 8, fontSize: 13, fontWeight: 600, background: "transparent", border: "1px solid #2a2d3e", color: "#6b7280" }}
           >
