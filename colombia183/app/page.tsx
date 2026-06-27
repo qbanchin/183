@@ -42,7 +42,7 @@ export default function HomePage() {
       <section style={{ padding: "80px 24px", background: "#16192a", borderTop: "1px solid #2a2d3e" }}>
         <div style={{ maxWidth: 720, margin: "0 auto" }}>
           <div style={{ fontSize: 12, fontWeight: 700, color: "#FCD116", letterSpacing: "0.1em", marginBottom: 40, textAlign: "center" }}>HOW IT WORKS</div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 32 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 32 }}>
             {[
               { icon: "📧", title: "Scan your Gmail", body: "Connect Gmail and the app automatically searches your inbox for Colombia flights, hotels, and Airbnb bookings." },
               { icon: "📅", title: "Or enter manually", body: "Add any stay — arrivals, departures, multi-city trips — in seconds with the date picker." },
