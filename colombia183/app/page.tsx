@@ -1,4 +1,6 @@
+"use client";
 import Link from "next/link";
+import InstallPrompt from "@/components/InstallPrompt";
 
 export default function HomePage() {
   return (
@@ -26,14 +28,13 @@ export default function HomePage() {
           {" "}before they sneak up.
         </h1>
 
-        <p style={{ fontSize: 18, color: "#9ca3af", maxWidth: 500, lineHeight: 1.7, marginBottom: 48 }}>
+        <p style={{ fontSize: 18, color: "#9ca3af", maxWidth: 500, lineHeight: 1.7, marginBottom: 40 }}>
           The rolling 365-day rule catches expats off guard every year. 183 Days tracks every day you spend in the country — automatically from flight emails or manually — and alerts you before you cross the threshold.
         </p>
 
         {/* Install buttons */}
-        <div style={{ display: "flex", gap: 6, justifyContent: "center", marginBottom: 32, flexWrap: "wrap" }}>
-          <img src="/install-button-android.png" alt="Install for Android" style={{ width: 192, height: "auto", borderRadius: 8, cursor: "pointer" }} />
-          <img src="/install-button-apple.png" alt="Install for Apple" style={{ width: 192, height: "auto", borderRadius: 8, cursor: "pointer" }} />
+        <div style={{ marginBottom: 32, display: "flex", justifyContent: "center" }}>
+          <InstallPrompt />
         </div>
 
         <Link href="/signup" style={{ background: "#FCD116", color: "#16192a", fontWeight: 800, fontSize: 17, padding: "16px 40px", borderRadius: 12, display: "inline-block" }}>
