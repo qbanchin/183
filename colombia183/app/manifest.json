@@ -1,0 +1,38 @@
+{
+  "name": "183 Days - Colombia Tax Tracker",
+  "short_name": "183 Days",
+  "description": "Track your days in Colombia and stay ahead of the 183-day tax residency rule.",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#0f1117",
+  "theme_color": "#FCD116",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/183logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/183logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["finance", "productivity", "travel"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Add Stay",
+      "url": "/dashboard",
+      "description": "Log a new Colombia stay"
+    },
+    {
+      "name": "History",
+      "url": "/history",
+      "description": "View all stays"
+    }
+  ]
+}

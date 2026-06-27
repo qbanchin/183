@@ -6,6 +6,7 @@ import TripRow from "@/components/TripRow";
 import AddTripModal from "@/components/AddTripModal";
 import EmailModal from "@/components/EmailModal";
 import GmailScanner from "@/components/GmailScanner";
+import InstallPrompt from "@/components/InstallPrompt";
 
 export default function DashboardClient({
   initialTrips,
@@ -84,6 +85,7 @@ export default function DashboardClient({
   return (
     <>
       <Navbar email={userEmail} />
+      <div style={{ maxWidth: 760, margin: "0 auto", padding: "12px 16px 0" }}><InstallPrompt /></div>
       <div style={{ maxWidth: 760, margin: "0 auto", padding: "24px 16px 80px" }}>
 
         {/* Primary status card */}
@@ -98,7 +100,7 @@ export default function DashboardClient({
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
               <svg width={190} height={105} viewBox="0 0 190 105">
                 <path d="M 10 95 A 85 85 0 0 1 180 95" fill="none" stroke="#2a2d3e" strokeWidth={14} strokeLinecap="round" />
-                <path d="M 10 95 A 85 85 0 0 1 180 95" fill="none" stroke="#e53e3e"
+                <path d="M 10 95 A 85 85 0 0 1 180 95" fill="none" stroke={statusColor}
                   strokeWidth={14} strokeLinecap="round"
                   strokeDasharray={`${(pct / 100) * 267} 267`} />
                 <text x="95" y="74" textAnchor="middle" fill={statusColor} fontSize="32" fontWeight="800" fontFamily="Inter, sans-serif">{daysLast365}</text>
@@ -113,7 +115,7 @@ export default function DashboardClient({
               <div style={{ fontSize: 36, fontWeight: 900, color: "#fff", lineHeight: 1 }}>{remaining}</div>
               <div style={{ fontSize: 14, color: "#6b7280", marginBottom: 16 }}>days remaining before residency</div>
               <div style={{ fontSize: 12, color: "#4b5563", background: "#0f1117", borderRadius: 8, padding: "8px 12px", lineHeight: 1.6 }}>
-                Updates daily—stays older than 365 days are automatically removed.
+                Resets daily - any stays 366 days or more just dropped off.
               </div>
             </div>
           </div>
