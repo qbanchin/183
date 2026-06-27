@@ -1,4 +1,5 @@
-import Link from "next/link";\nimport InstallPrompt from "@/components/InstallPrompt";
+import Link from "next/link";
+import InstallPrompt from "@/components/InstallPrompt";
 
 export default function HomePage() {
   return (
