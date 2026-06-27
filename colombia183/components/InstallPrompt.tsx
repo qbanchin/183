@@ -76,7 +76,7 @@ export default function InstallPrompt() {
           <img
             src="/install-button-apple.png"
             alt="Install for Apple Device"
-            style={{ width: "100%", borderRadius: 10, display: "block" }}
+            style={{ width: 192, height: "auto", borderRadius: 8, display: "block" }}
           />
         </button>
 
