@@ -35,7 +35,7 @@ export default function HomePage() {
           Start tracking free →
         </Link>
 
-        <p style={{ marginTop: 16, fontSize: 13, color: "#4b5563" }}>No credit card. Free forever for personal use.</p>
+        <p style={{ marginTop: 16, fontSize: 13, color: "#4b5563" }}>No credit card. Free for personal use.</p>
       </section>
 
       {/* How it works */}

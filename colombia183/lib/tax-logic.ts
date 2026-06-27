@@ -152,3 +152,42 @@ export function isFuture(trip: Trip): boolean {
   today.setHours(12, 0, 0, 0);
   return parseDate(trip.start_date) > today;
 }
+
+// Merge overlapping or adjacent Colombia stays into single entries
+export function mergeOverlappingStays(trips: Omit<Trip, "id" | "user_id" | "created_at">[]): Omit<Trip, "id" | "user_id" | "created_at">[] {
+  const colombiaStays = trips
+    .filter(t => t.location === "colombia" || t.location === "planned")
+    .sort((a, b) => a.start_date > b.start_date ? 1 : -1);
+
+  const other = trips.filter(t => t.location !== "colombia" && t.location !== "planned");
+
+  if (!colombiaStays.length) return trips;
+
+  const merged: typeof colombiaStays = [];
+  let current = { ...colombiaStays[0] };
+
+  for (let i = 1; i < colombiaStays.length; i++) {
+    const next = colombiaStays[i];
+    const currentEnd = parseDate(current.end_date);
+    const nextStart = parseDate(next.start_date);
+
+    // Overlapping or adjacent (within 1 day) — merge
+    const gap = Math.round((nextStart.getTime() - currentEnd.getTime()) / 86400000);
+    if (gap <= 1 && current.location === next.location) {
+      // Extend end date if next ends later
+      if (next.end_date > current.end_date) {
+        current.end_date = next.end_date;
+      }
+      // Combine notes
+      if (next.note && next.note !== current.note) {
+        current.note = [current.note, next.note].filter(Boolean).join(" + ");
+      }
+    } else {
+      merged.push(current);
+      current = { ...next };
+    }
+  }
+  merged.push(current);
+
+  return [...other, ...merged];
+}
