@@ -8,16 +8,15 @@ interface Props {
 }
 
 export default function TripRow({ trip, onDelete, onEdit }: Props) {
-  const isColombia = trip.location === "colombia";
   const isPlanned = trip.location === "planned";
   const days = getTripDays(trip);
   const future = isFuture(trip);
 
-  const icon = isPlanned ? "📅" : isColombia ? "🇨🇴" : "✈️";
-  const borderColor = isPlanned ? "#60a5fa55" : isColombia ? "#FCD11633" : "#2a2d3e";
-  const leftColor = isPlanned ? "#60a5fa" : isColombia ? "#FCD116" : "#374151";
-  const dayColor = isPlanned ? "#60a5fa" : isColombia ? "#FCD116" : "#6b7280";
-  const label = isPlanned ? "Planned Colombia Trip" : isColombia ? "In Colombia" : "Outside Colombia";
+  const icon = isPlanned ? "📅" : "🇨🇴";
+  const borderColor = isPlanned ? "#60a5fa55" : "#FCD11633";
+  const leftColor = isPlanned ? "#60a5fa" : "#FCD116";
+  const dayColor = isPlanned ? "#60a5fa" : "#FCD116";
+  const label = isPlanned ? "Planned Colombia Trip" : "In Colombia";
 
   return (
     <div style={{

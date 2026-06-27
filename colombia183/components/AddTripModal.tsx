@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function AddTripModal({ trip, onSave, onClose }: Props) {
-  const [location, setLocation] = useState<"colombia" | "outside" | "planned">("colombia");
+  const [location, setLocation] = useState<"colombia" | "planned">("colombia");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [note, setNote] = useState("");
@@ -18,7 +18,7 @@ export default function AddTripModal({ trip, onSave, onClose }: Props) {
 
   useEffect(() => {
     if (trip) {
-      setLocation(trip.location);
+      setLocation(trip.location === "outside" ? "colombia" : trip.location as "colombia" | "planned");
       setStartDate(trip.start_date);
       setEndDate(trip.end_date);
       setNote(trip.note || "");
@@ -47,34 +47,33 @@ export default function AddTripModal({ trip, onSave, onClose }: Props) {
   const locationOptions = [
     { v: "colombia" as const, label: "🇨🇴 In Colombia", desc: "Confirmed past or current stay" },
     { v: "planned" as const, label: "📅 Planned Trip", desc: "Future Colombia stay" },
-    { v: "outside" as const, label: "✈️ Outside Colombia", desc: "Time spent elsewhere" },
   ];
 
-  const locationColor = location === "colombia" ? "#FCD116" : location === "planned" ? "#60a5fa" : "#6b7280";
+  const locationColor = location === "colombia" ? "#FCD116" : "#60a5fa";
 
   return (
     <div style={{ position: "fixed", inset: 0, background: "#000a", display: "flex", alignItems: "flex-end", justifyContent: "center", zIndex: 200, padding: 16 }}>
       <div style={{ width: "100%", maxWidth: 480, background: "#16192a", borderRadius: 20, padding: 28, border: "1px solid #2a2d3e", boxShadow: "0 -4px 40px #000a", maxHeight: "90dvh", overflowY: "auto" }}>
         <div style={{ fontWeight: 800, fontSize: 20, marginBottom: 4 }}>{trip ? "Edit Stay" : "Add Stay"}</div>
-        <div style={{ fontSize: 13, color: "#6b7280", marginBottom: 24 }}>Log a confirmed stay or plan a future trip.</div>
+        <div style={{ fontSize: 13, color: "#6b7280", marginBottom: 24 }}>Log a confirmed stay or plan a future trip to Colombia.</div>
 
         {/* Location toggle */}
         <div style={{ fontSize: 12, fontWeight: 700, color: "#6b7280", marginBottom: 8 }}>TYPE</div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 20 }}>
+        <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
           {locationOptions.map(o => (
             <button
               key={o.v}
               onClick={() => setLocation(o.v)}
               style={{
-                padding: "11px 14px", borderRadius: 8, textAlign: "left",
+                flex: 1, padding: "11px 14px", borderRadius: 8, textAlign: "left",
                 border: `2px solid ${location === o.v ? locationColor : "#2a2d3e"}`,
                 background: location === o.v ? locationColor + "15" : "transparent",
                 color: location === o.v ? locationColor : "#9ca3af",
-                fontWeight: 600, fontSize: 14, display: "flex", justifyContent: "space-between", alignItems: "center"
+                fontWeight: 600, fontSize: 14,
               }}
             >
-              <span>{o.label}</span>
-              <span style={{ fontSize: 11, fontWeight: 400, opacity: 0.7 }}>{o.desc}</span>
+              <div>{o.label}</div>
+              <div style={{ fontSize: 11, fontWeight: 400, opacity: 0.7, marginTop: 2 }}>{o.desc}</div>
             </button>
           ))}
         </div>
@@ -98,17 +97,16 @@ export default function AddTripModal({ trip, onSave, onClose }: Props) {
         {previewDays !== null && (
           <div style={{ background: "#0f1117", borderRadius: 8, padding: "9px 14px", fontSize: 14, color: locationColor, marginBottom: 16, fontWeight: 700 }}>
             {previewDays} day{previewDays !== 1 ? "s" : ""}
-            {location === "colombia" ? " in Colombia" : location === "planned" ? " planned in Colombia" : " outside Colombia"}
+            {location === "colombia" ? " in Colombia" : " planned in Colombia"}
           </div>
         )}
 
         {location === "planned" && (
           <div style={{ background: "#1e3a5f22", border: "1px solid #60a5fa33", borderRadius: 8, padding: "9px 14px", fontSize: 13, color: "#93c5fd", marginBottom: 16, lineHeight: 1.6 }}>
-            📅 Planned trips show your <strong>projected</strong> day count — they won't affect your actual count until the dates pass.
+            📅 Planned trips show your projected count — they won't affect your actual count until the dates pass.
           </div>
         )}
 
-        {/* Note */}
         <div style={{ fontSize: 12, fontWeight: 700, color: "#6b7280", marginBottom: 6 }}>NOTE (OPTIONAL)</div>
         <input value={note} onChange={e => setNote(e.target.value)} placeholder="e.g. Bogotá work trip, Cartagena vacation" style={{ marginBottom: 20 }} />
 
