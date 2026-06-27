@@ -98,7 +98,7 @@ export default function DashboardClient({
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
               <svg width={190} height={105} viewBox="0 0 190 105">
                 <path d="M 10 95 A 85 85 0 0 1 180 95" fill="none" stroke="#2a2d3e" strokeWidth={14} strokeLinecap="round" />
-                <path d="M 10 95 A 85 85 0 0 1 180 95" fill="none" stroke={statusColor}
+                <path d="M 10 95 A 85 85 0 0 1 180 95" fill="none" stroke="#e53e3e"
                   strokeWidth={14} strokeLinecap="round"
                   strokeDasharray={`${(pct / 100) * 267} 267`} />
                 <text x="95" y="74" textAnchor="middle" fill={statusColor} fontSize="32" fontWeight="800" fontFamily="Inter, sans-serif">{daysLast365}</text>
