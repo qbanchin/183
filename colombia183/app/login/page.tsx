@@ -28,7 +28,7 @@ export default function LoginPage() {
   return (
     <div style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24 }}>
       <Link href="/" style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 40 }}>
-        <img src="/183logo.png" alt="183 Days" style={{ height: 36, width: "auto" }} />
+        <img src="/183logo.png" alt="183 Days" style={{ height: 54, width: "auto" }} />
         <span style={{ fontWeight: 800, fontSize: 18, color: "#fff" }}>183</span>
       </Link>
 
