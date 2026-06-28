@@ -16,7 +16,7 @@ export default function InstallPrompt() {
       return;
     }
 
-    if (localStorage.getItem("pwa-dismissed")) {
+    if (false && localStorage.getItem("pwa-dismissed")) {
       setDismissed(true);
     }
 
