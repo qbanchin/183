@@ -115,7 +115,7 @@ export default function DashboardClient({
               <div style={{ fontSize: 36, fontWeight: 900, color: "#fff", lineHeight: 1 }}>{remaining}</div>
               <div style={{ fontSize: 14, color: "#6b7280", marginBottom: 16 }}>days remaining before residency</div>
               <div style={{ fontSize: 12, color: "#4b5563", background: "#0f1117", borderRadius: 8, padding: "8px 12px", lineHeight: 1.6 }}>
-                Resets daily - any stays 366 days or more just dropped off.
+                Updates daily—stays older than 365 days are automatically removed.
               </div>
             </div>
           </div>
