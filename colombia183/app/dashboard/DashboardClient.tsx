@@ -5,17 +5,14 @@ import Navbar from "@/components/Navbar";
 import TripRow from "@/components/TripRow";
 import AddTripModal from "@/components/AddTripModal";
 import EmailModal from "@/components/EmailModal";
-import GmailScanner from "@/components/GmailScanner";
 import InstallPrompt from "@/components/InstallPrompt";
 
 export default function DashboardClient({
   initialTrips,
   userEmail,
-  gmailConnected,
 }: {
   initialTrips: Trip[];
   userEmail: string;
-  gmailConnected: boolean;
 }) {
   const [trips, setTrips] = useState<Trip[]>(initialTrips);
   const [showAdd, setShowAdd] = useState(false);
@@ -85,8 +82,10 @@ export default function DashboardClient({
   return (
     <>
       <Navbar email={userEmail} />
-      <div style={{ maxWidth: 760, margin: "0 auto", padding: "12px 16px 0" }}><InstallPrompt /></div>
-      <div style={{ maxWidth: 760, margin: "0 auto", padding: "24px 16px 80px" }}>
+      <div style={{ maxWidth: 760, margin: "0 auto", padding: "12px 16px 0" }}>
+        <InstallPrompt />
+      </div>
+      <div style={{ maxWidth: 760, margin: "0 auto", padding: "12px 16px 80px" }}>
 
         {/* Primary status card */}
         <div style={{ background: "#16192a", borderRadius: 16, padding: "24px", marginBottom: 12, border: "1px solid #2a2d3e", position: "relative", overflow: "hidden" }}>
@@ -100,6 +99,9 @@ export default function DashboardClient({
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
               <svg width={190} height={105} viewBox="0 0 190 105">
                 <path d="M 10 95 A 85 85 0 0 1 180 95" fill="none" stroke="#2a2d3e" strokeWidth={14} strokeLinecap="round" />
+                <path d="M 10 95 A 85 85 0 0 1 180 95" fill="none" stroke="#e53e3e"
+                  strokeWidth={14} strokeLinecap="round" opacity={0.15}
+                  strokeDasharray={`${(33 / 100) * 267} 267`} strokeDashoffset={`-${(67 / 100) * 267}`} />
                 <path d="M 10 95 A 85 85 0 0 1 180 95" fill="none" stroke={statusColor}
                   strokeWidth={14} strokeLinecap="round"
                   strokeDasharray={`${(pct / 100) * 267} 267`} />
@@ -186,18 +188,13 @@ export default function DashboardClient({
         </div>
 
         {/* Action buttons */}
-        <div style={{ display: "flex", gap: 10, marginBottom: 16 }}>
-          <button onClick={() => { setEditTrip(null); setShowAdd(true); }} style={{ flex: 1, background: "#FCD116", color: "#16192a", border: "none", borderRadius: 10, padding: "13px", fontWeight: 700, fontSize: 15 }}>
+        <div style={{ display: "flex", gap: 10, marginBottom: 24 }}>
+          <button onClick={() => { setEditTrip(null); setShowAdd(true); }} style={{ flex: 1, background: "#FCD116", color: "#16192a", border: "none", borderRadius: 10, padding: "13px", fontWeight: 700, fontSize: 15, cursor: "pointer" }}>
             + Add Stay
           </button>
-          <button onClick={() => setShowEmail(true)} style={{ flex: 1, background: "#16192a", color: "#e8e4d9", border: "1px solid #2a2d3e", borderRadius: 10, padding: "13px", fontWeight: 700, fontSize: 15 }}>
+          <button onClick={() => setShowEmail(true)} style={{ flex: 1, background: "#16192a", color: "#e8e4d9", border: "1px solid #2a2d3e", borderRadius: 10, padding: "13px", fontWeight: 700, fontSize: 15, cursor: "pointer" }}>
             ✉️ Paste Email
           </button>
-        </div>
-
-        {/* Gmail Scanner */}
-        <div style={{ marginBottom: 24 }}>
-          <GmailScanner onAdd={handleAddMultiple} gmailConnected={gmailConnected} />
         </div>
 
         {/* Recent trips */}
@@ -214,7 +211,7 @@ export default function DashboardClient({
           <div style={{ textAlign: "center", padding: "60px 24px", color: "#4b5563" }}>
             <div style={{ fontSize: 44, marginBottom: 16 }}>🗓️</div>
             <div style={{ fontWeight: 700, fontSize: 16, color: "#6b7280", marginBottom: 8 }}>No stays logged yet</div>
-            <div style={{ fontSize: 14 }}>Add a confirmed stay, plan a future trip, paste an email, or scan Gmail.</div>
+            <div style={{ fontSize: 14 }}>Add a confirmed stay, plan a future trip, or paste a booking confirmation email.</div>
           </div>
         )}
 
