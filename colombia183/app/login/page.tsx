@@ -71,7 +71,8 @@ export default function LoginPage() {
         </button>
 
         <p style={{ textAlign: "center", marginTop: 20, fontSize: 14, color: "#6b7280" }}>
-          No account?{" "}
+          <p style={{ textAlign: "right", marginBottom: 16, fontSize: 13 }}><a href="/forgot-password" style={{ color: "#6b7280", fontSize: 13 }}>Forgot password?</a><br /><br />No account?
+No account?{" "}
           <Link href="/signup" style={{ color: "#FCD116", fontWeight: 600 }}>Create one free</Link>
         </p>
       </div>
