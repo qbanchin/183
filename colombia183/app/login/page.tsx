@@ -26,10 +26,9 @@ export default function LoginPage() {
   }
 
   return (
-    <div style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24 }}>
-      <Link href="/" style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 40 }}>
-        <img src="/183logo.png" alt="183 Days" style={{ height: 81, width: "auto" }} />
-        
+    <div style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24, background: "#0f1117", fontFamily: "Inter, system-ui, sans-serif", color: "#e8e4d9" }}>
+      <Link href="/" style={{ marginBottom: 40 }}>
+        <img src="/183logo.png" alt="183 Days" style={{ height: 54, width: "auto" }} />
       </Link>
 
       <div style={{ width: "100%", maxWidth: 400, background: "#16192a", borderRadius: 16, padding: 32, border: "1px solid #2a2d3e" }}>
@@ -46,7 +45,10 @@ export default function LoginPage() {
           style={{ marginBottom: 16 }}
         />
 
-        <label style={{ fontSize: 12, fontWeight: 700, color: "#6b7280", display: "block", marginBottom: 6 }}>Password</label>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+          <label style={{ fontSize: 12, fontWeight: 700, color: "#6b7280" }}>Password</label>
+          <Link href="/forgot-password" style={{ fontSize: 12, color: "#6b7280" }}>Forgot password?</Link>
+        </div>
         <input
           type="password"
           value={password}
@@ -65,14 +67,13 @@ export default function LoginPage() {
         <button
           onClick={handleLogin}
           disabled={loading || !email || !password}
-          style={{ width: "100%", background: email && password ? "#FCD116" : "#2a2d3e", color: email && password ? "#16192a" : "#4b5563", border: "none", borderRadius: 10, padding: "13px", fontWeight: 700, fontSize: 15, transition: "all .15s" }}
+          style={{ width: "100%", background: email && password ? "#FCD116" : "#2a2d3e", color: email && password ? "#16192a" : "#4b5563", border: "none", borderRadius: 10, padding: "13px", fontWeight: 700, fontSize: 15, cursor: "pointer" }}
         >
           {loading ? "Signing in…" : "Sign in"}
         </button>
 
         <p style={{ textAlign: "center", marginTop: 20, fontSize: 14, color: "#6b7280" }}>
-          <p style={{ textAlign: "right", marginBottom: 16, fontSize: 13 }}><a href="/forgot-password" style={{ color: "#6b7280", fontSize: 13 }}>Forgot password?</a><br /><br />No account?
-No account?{" "}
+          No account?{" "}
           <Link href="/signup" style={{ color: "#FCD116", fontWeight: 600 }}>Create one free</Link>
         </p>
       </div>
