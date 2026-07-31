@@ -1,4 +1,4 @@
-const CACHE_NAME = '183days-v2';
+const CACHE_NAME = '183days-v3';
 const STATIC_ASSETS = [
   '/',
   '/dashboard',
