@@ -11,42 +11,44 @@ export default function ResetPasswordPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [ready, setReady] = useState(false);
+  const [expired, setExpired] = useState(false);
   const supabase = createClient();
   const router = useRouter();
 
   useEffect(() => {
-    // Handle both hash-based and PKCE-based recovery
-    const handleRecovery = async () => {
-      // Check for hash tokens (older Supabase flow)
-      const hash = window.location.hash;
-      if (hash && hash.includes("access_token")) {
-        const params = new URLSearchParams(hash.substring(1));
-        const accessToken = params.get("access_token");
-        const refreshToken = params.get("refresh_token");
-        if (accessToken && refreshToken) {
-          await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
-          setReady(true);
-          return;
-        }
+    // Check for error in URL
+    const params = new URLSearchParams(window.location.search);
+    const errorCode = params.get("error_code");
+    if (errorCode === "otp_expired" || params.get("error") === "access_denied") {
+      setExpired(true);
+      return;
+    }
+
+    // Handle hash tokens
+    const hash = window.location.hash;
+    if (hash && hash.includes("access_token")) {
+      const hashParams = new URLSearchParams(hash.substring(1));
+      const accessToken = hashParams.get("access_token");
+      const refreshToken = hashParams.get("refresh_token");
+      if (accessToken && refreshToken) {
+        supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken })
+          .then(() => setReady(true));
+        return;
       }
+    }
 
-      // Listen for PASSWORD_RECOVERY event (PKCE flow)
-      const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-        if (event === "PASSWORD_RECOVERY" || (event === "SIGNED_IN" && session)) {
-          setReady(true);
-        }
-      });
-
-      // Check existing session
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
+    // Listen for PASSWORD_RECOVERY event
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "PASSWORD_RECOVERY" || (event === "SIGNED_IN" && session)) {
         setReady(true);
       }
+    });
 
-      return () => subscription.unsubscribe();
-    };
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) setReady(true);
+    });
 
-    handleRecovery();
+    return () => subscription.unsubscribe();
   }, []);
 
   async function handleReset() {
@@ -76,6 +78,23 @@ export default function ResetPasswordPage() {
     );
   }
 
+  if (expired) {
+    return (
+      <div style={{ minHeight: "100dvh", display: "flex", alignItems: "center", justifyContent: "center", padding: 24, background: "#0f1117" }}>
+        <div style={{ textAlign: "center", maxWidth: 400 }}>
+          <div style={{ fontSize: 48, marginBottom: 16 }}>⏱️</div>
+          <h2 style={{ fontSize: 24, fontWeight: 800, color: "#fff", marginBottom: 12 }}>Link expired</h2>
+          <p style={{ color: "#6b7280", lineHeight: 1.7, marginBottom: 24 }}>
+            This password reset link has expired. Request a new one and use it within 24 hours.
+          </p>
+          <Link href="/forgot-password" style={{ background: "#FCD116", color: "#16192a", fontWeight: 700, padding: "12px 28px", borderRadius: 10, textDecoration: "none", display: "inline-block" }}>
+            Request new link
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   if (!ready) {
     return (
       <div style={{ minHeight: "100dvh", display: "flex", alignItems: "center", justifyContent: "center", padding: 24, background: "#0f1117" }}>
@@ -84,9 +103,7 @@ export default function ResetPasswordPage() {
           <div style={{ fontSize: 16, color: "#9ca3af", marginBottom: 8 }}>Verifying your reset link…</div>
           <div style={{ fontSize: 13, color: "#4b5563" }}>This should only take a moment.</div>
           <div style={{ marginTop: 24 }}>
-            <Link href="/forgot-password" style={{ fontSize: 13, color: "#6b7280" }}>
-              Request a new link
-            </Link>
+            <Link href="/forgot-password" style={{ fontSize: 13, color: "#6b7280" }}>Request a new link</Link>
           </div>
         </div>
       </div>
