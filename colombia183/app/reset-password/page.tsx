@@ -18,37 +18,32 @@ export default function ResetPasswordPage() {
   useEffect(() => {
     const init = async () => {
       const params = new URLSearchParams(window.location.search);
-      const errorCode = params.get("error_code");
-      const code = params.get("code");
 
-      // Handle expired link
-      if (errorCode === "otp_expired" || params.get("error") === "access_denied") {
+      // Error cases
+      if (params.get("error") === "access_denied" || params.get("error_code") === "otp_expired" || params.get("error") === "auth_failed") {
         setExpired(true);
         return;
       }
 
-      // Exchange PKCE code for session
-      if (code) {
-        const { error } = await supabase.auth.exchangeCodeForSession(code);
-        if (error) {
-          setExpired(true);
-        } else {
-          setReady(true);
-        }
-        return;
-      }
-
-      // Handle hash tokens (fallback)
-      const hash = window.location.hash;
-      if (hash && hash.includes("access_token")) {
-        const hashParams = new URLSearchParams(hash.substring(1));
-        const accessToken = hashParams.get("access_token");
-        const refreshToken = hashParams.get("refresh_token");
-        if (accessToken && refreshToken) {
-          await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
+      // Already verified by callback route
+      if (params.get("verified") === "true") {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
           setReady(true);
           return;
         }
+      }
+
+      // Direct code exchange (fallback)
+      const code = params.get("code");
+      if (code) {
+        const { error } = await supabase.auth.exchangeCodeForSession(code);
+        if (!error) {
+          setReady(true);
+          return;
+        }
+        setExpired(true);
+        return;
       }
 
       // Check existing session

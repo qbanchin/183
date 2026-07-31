@@ -15,7 +15,7 @@ export default function ForgotPasswordPage() {
     setLoading(true);
     setError("");
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-     redirectTo: "https://183days.co/reset-password",
+     redirectTo: "https://183days.co/auth/callback?type=recovery",
     });
     if (error) {
       setError(error.message);
