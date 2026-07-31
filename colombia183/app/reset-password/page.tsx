@@ -10,8 +10,26 @@ export default function ResetPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [ready, setReady] = useState(false);
   const supabase = createClient();
   const router = useRouter();
+
+  useEffect(() => {
+    // Supabase sends the session tokens in the URL hash
+    // We need to let Supabase process them first
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "PASSWORD_RECOVERY") {
+        setReady(true);
+      }
+    });
+
+    // Also check if we already have a session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) setReady(true);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   async function handleReset() {
     if (password !== confirm) { setError("Passwords don't match."); return; }
@@ -35,6 +53,16 @@ export default function ResetPasswordPage() {
           <div style={{ fontSize: 48, marginBottom: 16 }}>✅</div>
           <h2 style={{ fontSize: 24, fontWeight: 800, color: "#fff", marginBottom: 8 }}>Password updated!</h2>
           <p style={{ color: "#6b7280" }}>Redirecting to your dashboard…</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!ready) {
+    return (
+      <div style={{ minHeight: "100dvh", display: "flex", alignItems: "center", justifyContent: "center", padding: 24, background: "#0f1117" }}>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ fontSize: 14, color: "#6b7280" }}>Verifying your reset link…</div>
         </div>
       </div>
     );
@@ -69,6 +97,10 @@ export default function ResetPasswordPage() {
         >
           {loading ? "Updating…" : "Update password"}
         </button>
+
+        <p style={{ textAlign: "center", marginTop: 20, fontSize: 14, color: "#6b7280" }}>
+          <Link href="/login" style={{ color: "#FCD116", fontWeight: 600 }}>Back to login</Link>
+        </p>
       </div>
     </div>
   );
