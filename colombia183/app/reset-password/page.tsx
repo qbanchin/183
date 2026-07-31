@@ -15,20 +15,38 @@ export default function ResetPasswordPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Supabase sends the session tokens in the URL hash
-    // We need to let Supabase process them first
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "PASSWORD_RECOVERY") {
+    // Handle both hash-based and PKCE-based recovery
+    const handleRecovery = async () => {
+      // Check for hash tokens (older Supabase flow)
+      const hash = window.location.hash;
+      if (hash && hash.includes("access_token")) {
+        const params = new URLSearchParams(hash.substring(1));
+        const accessToken = params.get("access_token");
+        const refreshToken = params.get("refresh_token");
+        if (accessToken && refreshToken) {
+          await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
+          setReady(true);
+          return;
+        }
+      }
+
+      // Listen for PASSWORD_RECOVERY event (PKCE flow)
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+        if (event === "PASSWORD_RECOVERY" || (event === "SIGNED_IN" && session)) {
+          setReady(true);
+        }
+      });
+
+      // Check existing session
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
         setReady(true);
       }
-    });
 
-    // Also check if we already have a session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) setReady(true);
-    });
+      return () => subscription.unsubscribe();
+    };
 
-    return () => subscription.unsubscribe();
+    handleRecovery();
   }, []);
 
   async function handleReset() {
@@ -42,7 +60,7 @@ export default function ResetPasswordPage() {
       setLoading(false);
     } else {
       setSuccess(true);
-      setTimeout(() => router.push("/dashboard"), 2000);
+      setTimeout(() => router.push("/login"), 2000);
     }
   }
 
@@ -52,7 +70,7 @@ export default function ResetPasswordPage() {
         <div style={{ textAlign: "center" }}>
           <div style={{ fontSize: 48, marginBottom: 16 }}>✅</div>
           <h2 style={{ fontSize: 24, fontWeight: 800, color: "#fff", marginBottom: 8 }}>Password updated!</h2>
-          <p style={{ color: "#6b7280" }}>Redirecting to your dashboard…</p>
+          <p style={{ color: "#6b7280" }}>Redirecting to login…</p>
         </div>
       </div>
     );
@@ -62,7 +80,14 @@ export default function ResetPasswordPage() {
     return (
       <div style={{ minHeight: "100dvh", display: "flex", alignItems: "center", justifyContent: "center", padding: 24, background: "#0f1117" }}>
         <div style={{ textAlign: "center" }}>
-          <div style={{ fontSize: 14, color: "#6b7280" }}>Verifying your reset link…</div>
+          <div style={{ fontSize: 32, marginBottom: 16 }}>🔐</div>
+          <div style={{ fontSize: 16, color: "#9ca3af", marginBottom: 8 }}>Verifying your reset link…</div>
+          <div style={{ fontSize: 13, color: "#4b5563" }}>This should only take a moment.</div>
+          <div style={{ marginTop: 24 }}>
+            <Link href="/forgot-password" style={{ fontSize: 13, color: "#6b7280" }}>
+              Request a new link
+            </Link>
+          </div>
         </div>
       </div>
     );
